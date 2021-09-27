@@ -22,7 +22,7 @@
 
 unsigned long counter; 
 unsigned long pre_counter; 
-
+bool bSwipeOut = true;
 CRGB leds[NUM_LEDS];                                 // Define the array of leds
 
 void setup() { 
@@ -38,16 +38,16 @@ void fadeall() { for(int i = 0; i < NUM_LEDS; i++) { leds[i].nscale8(series1); }
 void fadeall2() { for(int i = 0; i < NUM_LEDS; i++) { leds[i].nscale8(series2); } }  //Swipe out
 
 void loop() { 
-      //delay(PulseFreq);                              // Scan pattern delay
-	    //static uint8_t hue = 255;
-      system_tick();
-        Serial.print(" Begin cycle");
+	//delay(PulseFreq);                              // Scan pattern delay
+	//static uint8_t hue = 255;
+	system_tick();
+	Serial.print(" Begin cycle");
 }
  
 void system_tick() { 
     counter=millis();
 	
-    if(counter % PulseFreq == 0) {	  
+    if (bSwipeOut) {	  
 		//------------------------Swipe Out-----------------------
 		Serial.print(" Swipe out");
 		for(int i = 0; i < (NUM_LEDS / 2) + 38; i++) {
@@ -64,10 +64,8 @@ void system_tick() {
 			fadeall();                                      // Apply fade effect
 			FastLED.delay(delay1);                                // Speed of cycle, in one direction
 		}
-	}
-
-	//------------------------Swipe In------------------------
-	if(counter % PulseFreq == 0) { 
+		bSwipeOut = false;
+	} else { 
 		 
 		Serial.print(" Swipe in");
 		for(int i = 0; i < (NUM_LEDS /2) + 38; i++) {
