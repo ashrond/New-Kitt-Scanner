@@ -57,13 +57,14 @@ void loop() {
   //based on any button definitions, check related value to animation mode or color settings
 
   system_tick();
-  Serial.println("Begin cycle");
+  //Serial.println("Begin cycle");
 }
  
 void system_tick() { 
     //counter=millis();
   
     if (bSwipeOut) {    
+    Serial.println("Begin cycle.");
     //------------------------Swipe Out-----------------------
     Serial.println("Swipe out");
     
@@ -107,9 +108,7 @@ void system_tick() {
     Serial.println("fade edges out");
     
     //faded lights in from center, cycled them out to edges. now fade them out while at edges
-    for (int nStartupIndex4 = 0; nStartupIndex4 < nAnimationStartupFramesCount; nStartupIndex4++) { 
-      //blur1d(leds, NUM_LEDS, 15);   
-      
+    for (int nStartupIndex4 = 0; nStartupIndex4 < nAnimationStartupFramesCount; nStartupIndex4++) {       
       //fade down the blurred, edge lit LEDs gradually    
       fadeall();                                      // Apply fade effect      
       FastLED.show();                                 // Show the leds
@@ -128,48 +127,53 @@ void system_tick() {
     
     leds[(NUM_LEDS - 1)] = CRGB color;
     leds[0] = CRGB color;
+    //FastLED.delay(delay1); 
     
     //fade in edge lights
     for (int nStartupEdgeIndex = 0; nStartupEdgeIndex < nAnimationStartupFramesCount; nStartupEdgeIndex++) {
-      Serial.print(nStartupEdgeIndex + " : ");      
+      leds[(NUM_LEDS - 1)] = CRGB color;
+      leds[0] = CRGB color;
+      blur1d(leds, NUM_LEDS, 15);
+      //Serial.print(nStartupEdgeIndex + " : ");  
+      int nSubLoop = nAnimationStartupFramesCount - nStartupEdgeIndex;
               
       //fade and blur the 2 lit LEDs gradually
       //this is done by having each frame blur a progressively lower # of times between show()
-      for (int nTemp = 0; nTemp < (nAnimationStartupFramesCount - nStartupEdgeIndex); nTemp++) {  
-        //blur1d(leds, NUM_LEDS, 15);   
+      for (int nTemp2 = 0; nTemp2 < nSubLoop; nTemp2++) { 
         fadeall();                                      // Apply fade effect
       }
       
       FastLED.show();                                 // Show the leds
       FastLED.delay(delay1);                          // Speed of cycle, in one direction
     }
-    FastLED.clear(true);
+    //Serial.println("-");
     
-    /*
-    Serial.println("swipe edge lights inward i ");
+    Serial.println("swipe edge lights inward k ");
     
     //move the lit edges in by 1 each cycle
-    for (int i = 1; i < (NUM_LEDS / 2); i++) {
-      Serial.print(i + " : ");
+    for (int k = 1; k < (NUM_LEDS / 2); k++) {
+      Serial.print(k + " : ");
       //distance needs to start from edge
-      //int nDistanceFromCenter2 = (NUM_LEDS / 2) - i;
-      leds[(NUM_LEDS - i)] = CRGB color;
-      leds[i-1] = CRGB color;
+      //int nDistanceFromCenter2 = (NUM_LEDS / 2) - k;
+      leds[(NUM_LEDS - k)] = CRGB color;
+      leds[k-1] = CRGB color;
       
       //reverse order = max size - current frame# 
-      //this allows the i index in the loop to go up while visible LED display goes "backwards"
-      
+      //this allows the i index in the loop to go up while visible LED display goes "backwards"     
       blur1d(leds, NUM_LEDS, 15);       
       fadeall();                                      // Apply fade effect
       
       FastLED.show();                                 // Show the leds
       FastLED.delay(delay1);                          // Speed of cycle, in one direction
-    } 
+    }
     
+    /*
     Serial.println("fade out center lights after swipe in nStartupEdgeIndex3 ");  
     leds[(NUM_LEDS / 2) - 1] = CRGB color;
-    leds[NUM_LEDS / 2] = CRGB color;    
-    
+    leds[NUM_LEDS / 2] = CRGB color;
+    FastLED.show();   
+    FastLED.delay(delay1); 
+    */
     //leds have hit center. fade them out now.
     for (int nStartupIndex3 = 0; nStartupIndex3 < nAnimationStartupFramesCount; nStartupIndex3++) { 
       Serial.print(nStartupIndex3 + " : ");   
@@ -179,14 +183,15 @@ void system_tick() {
       FastLED.show();                                 // Show the leds
       FastLED.delay(delay1);                          // Speed of cycle, in one direction
     }
-    */
+    
     bSwipeOut = true;
     //ensure all lights off before next swipe cycle
     //FastLED.clear(true);
     FastLED.delay(nHoldInnerDelay); 
+    Serial.println("End cycle.");
   }
   //------------------------Mirror---------------------------
-  Serial.print(" End cycle");
+  
   //Serial.print(counter);
 }
 
