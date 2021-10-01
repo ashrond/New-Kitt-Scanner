@@ -1,5 +1,5 @@
-//Knight Scanner v3
-//By Ashrond
+//Knight Scanner v4
+//By Ashrond & Lambtor
 //https://www.programmingelectronics.com/arduino-sketch-with-millis-instead-of-delay/
 
 #include <FastLED.h>
