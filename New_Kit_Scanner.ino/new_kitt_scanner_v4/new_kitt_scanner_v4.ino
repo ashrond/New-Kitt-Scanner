@@ -10,8 +10,9 @@
 
 #define series1 210                                  //190 2000 for 80's 218 3000 for 2008
 #define series2 239                                  //190 2000 for 80's 218 3000 for 2008  
-#define delay1 51                                    //Swipe fast out
-#define delay2 142                                   //Swipe slow in
+#define delay1 35                                    //Swipe fast out
+#define delay2 140                                   //Swipe slow in
+#define delay3 65
 #define PulseFreq 15000
 
 // Green, Red, Blue
@@ -29,7 +30,7 @@ int nHoldOuterDelay = 2000;
 int nHoldInnerDelay = 2000;
 //need this 
 //int nAnimationSwipeFramesCount = NUM_LEDS_WITH_MARGIN - (NUM_LEDS / 2);
-int nAnimationStartupFramesCount = 64;
+int nAnimationStartupFramesCount = 240;
 //int nAnimationTotalFramesCount = nAnimationSwipeFramesCount + nAnimationStartupFramesCount;
 
 //0 = out, 1 = hold, 2 = in
@@ -65,7 +66,9 @@ void system_tick() {
   
     if (bSwipeOut) {    
     Serial.println("Begin cycle.");
-    //------------------------Swipe Out-----------------------
+    
+    //------------------------Swipe Out-----------------------------------------------------------------------------------------------
+    
     Serial.println("Swipe out");
     
     //startup is now 2 leds fading in, with partial blur to 1 led on each of their sides
@@ -73,7 +76,7 @@ void system_tick() {
     for (int nStartupIndex = 0; nStartupIndex < nAnimationStartupFramesCount; nStartupIndex++) {
       leds[(NUM_LEDS / 2) - 1] = CRGB color;
       leds[NUM_LEDS / 2] = CRGB color;        
-      blur1d(leds, NUM_LEDS, 15);
+      blur1d(leds, NUM_LEDS, 20);
               
       //fade and blur the 2 lit LEDs gradually
       //this is done by having each frame blur a progressively lower # of times between show()
@@ -98,11 +101,11 @@ void system_tick() {
       leds[(NUM_LEDS / 2) + j] = CRGB color;
       leds[(NUM_LEDS / 2) - j] = CRGB color;      
       
-      blur1d(leds, NUM_LEDS, 15);       
+      blur1d(leds, NUM_LEDS, 40);       
       fadeall();                                      // Apply fade effect
       FastLED.show();                                 // Show the leds
       
-      FastLED.delay(delay1);                          // Speed of cycle, in one direction
+      FastLED.delay(delay1);                          // Speed of swipe out cycle, in one direction
     }
     
     Serial.println("fade edges out");
@@ -112,7 +115,7 @@ void system_tick() {
       //fade down the blurred, edge lit LEDs gradually    
       fadeall();                                      // Apply fade effect      
       FastLED.show();                                 // Show the leds
-      FastLED.delay(delay1);                          // Speed of cycle, in one direction
+      FastLED.delay(delay1);                          // Speed of edge swipe out fade
     }
     
     bSwipeOut = false;
@@ -122,7 +125,10 @@ void system_tick() {
     //this, if uncommented, lets you add time between cycle halves
     FastLED.delay(nHoldOuterDelay);
   } else { 
-     
+
+
+    //------------------------Swipe In-----------------------------------------------------------------------------------------------
+    
     Serial.println("fade in edge lights | startupEdgeIndex ");
     
     leds[(NUM_LEDS - 1)] = CRGB color;
@@ -133,7 +139,7 @@ void system_tick() {
     for (int nStartupEdgeIndex = 0; nStartupEdgeIndex < nAnimationStartupFramesCount; nStartupEdgeIndex++) {
       leds[(NUM_LEDS - 1)] = CRGB color;
       leds[0] = CRGB color;
-      blur1d(leds, NUM_LEDS, 15);
+      blur1d(leds, NUM_LEDS, 0);
       //Serial.print(nStartupEdgeIndex + " : ");  
       int nSubLoop = nAnimationStartupFramesCount - nStartupEdgeIndex;
               
@@ -144,7 +150,7 @@ void system_tick() {
       }
       
       FastLED.show();                                 // Show the leds
-      FastLED.delay(delay1);                          // Speed of cycle, in one direction
+      FastLED.delay(delay1);                          // Speed of edge swipe in fade
     }
     //Serial.println("-");
     
@@ -160,11 +166,11 @@ void system_tick() {
       
       //reverse order = max size - current frame# 
       //this allows the i index in the loop to go up while visible LED display goes "backwards"     
-      blur1d(leds, NUM_LEDS, 15);       
+      blur1d(leds, NUM_LEDS, 48);       
       fadeall();                                      // Apply fade effect
       
       FastLED.show();                                 // Show the leds
-      FastLED.delay(delay1);                          // Speed of cycle, in one direction
+      FastLED.delay(delay3);                          // Speed swipe in cycle, in one direction
     }
     
     /*
@@ -181,7 +187,7 @@ void system_tick() {
       fadeall();                                      // Apply fade effect
       
       FastLED.show();                                 // Show the leds
-      FastLED.delay(delay1);                          // Speed of cycle, in one direction
+      FastLED.delay(delay3);                          // Speed of cycle, in one direction
     }
     
     bSwipeOut = true;
