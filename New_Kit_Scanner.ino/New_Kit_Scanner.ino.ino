@@ -4,7 +4,7 @@
 
 #include <FastLED.h>
 #define NUM_LEDS 72                                  // How many leds in your strip?
-#define DATA_PIN 7
+#define DATA_PIN 6
 
 #define series1 210                                  //190 2000 for 80's 218 3000 for 2008
 #define series2 239                                  //190 2000 for 80's 218 3000 for 2008  
